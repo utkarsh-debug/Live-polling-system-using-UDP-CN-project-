@@ -135,13 +135,16 @@ Server displays:
 
 ---
 
-##  Author
+##  Authors
 
-GROUP PROJECT
-B.TECH STUDENTS PES UNIVERSITY-560085
-NAME        			SRN
-UTKARSH KUMAR			PES1UG24AM310
-SAMYUKTHA			PES1UG24AM312
-BASAWARAJ PANCHAL		PES1UG24AM350
+**Utkarsh Kumar**  
+SRN: PES1UG24AM310  
 
----
+**Samyuktha**  
+SRN: PES1UG24AM312  
+
+**Basawaraj Panchal**  
+SRN: PES1UG24AM350  
+
+**Institution:**  
+PES University, Bangalore (560085)
