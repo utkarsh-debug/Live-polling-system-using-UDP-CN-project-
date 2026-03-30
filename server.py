@@ -15,6 +15,7 @@ print("UDP Server started...")
 votes = defaultdict(int)
 received_sequences = defaultdict(set)
 registered_clients = set()
+ended_clients = set()
 
 user_votes = defaultdict(int)
 user_vote_breakdown = defaultdict(lambda: defaultdict(int))
@@ -108,13 +109,24 @@ def receive_votes():
         try:
             parts = message.split("|")
 
-            # END SESSION
+            # END handling (NEW LOGIC)
             if parts[0] == "END":
-                print("\nSession ending...")
-                with lock:
-                    print_final_report()
-                session_active = False
-                break
+                client_id = parts[1]
+
+                ended_clients.add(client_id)
+                print(f"{client_id} has ended their session.")
+
+                # Check if ALL clients finished
+                if registered_clients == ended_clients and len(registered_clients) > 0:
+                    print("\nAll clients have ended. Generating final report...")
+
+                    with lock:
+                        print_final_report()
+
+                    session_active = False
+                    break
+
+                continue
 
             # CLIENT REGISTRATION
             if parts[0] == "HELLO":
@@ -136,21 +148,20 @@ def receive_votes():
             _, client_id, seq_no, vote = parts
             seq_no = int(seq_no)
 
-            # SEND ACK
+            # ACK
             sock.sendto(encrypt(f"ACK|{seq_no}").encode(), addr)
 
-            # DUPLICATE CHECK
+            # Duplicate check
             if seq_no in received_sequences[client_id]:
                 duplicate_packets += 1
                 continue
 
             received_sequences[client_id].add(seq_no)
 
-            # VALIDATION
             if vote not in VALID_VOTES:
                 continue
 
-            # UPDATE COUNTS
+            # Update counts
             votes[vote] += 1
             user_votes[client_id] += 1
             user_vote_breakdown[client_id][vote] += 1
