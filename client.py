@@ -17,13 +17,12 @@ def decrypt(msg):
     return msg[::-1]
 
 # ==============================
-# REGISTER CLIENT ID
+# REGISTER CLIENT
 # ==============================
 while True:
     client_id = input("Enter client ID: ")
 
-    hello_msg = encrypt(f"HELLO|{client_id}")
-    sock.sendto(hello_msg.encode(), (SERVER_IP, SERVER_PORT))
+    sock.sendto(encrypt(f"HELLO|{client_id}").encode(), (SERVER_IP, SERVER_PORT))
 
     try:
         data, _ = sock.recvfrom(1024)
@@ -46,10 +45,9 @@ sequence_number = 1
 while True:
     vote = input("Enter vote (Python/C++/JavaScript) or END to stop: ")
 
-    # 🔥 END SESSION FEATURE
     if vote == "END":
-        sock.sendto(encrypt("END").encode(), (SERVER_IP, SERVER_PORT))
-        print("Session ended.")
+        sock.sendto(encrypt(f"END|{client_id}").encode(), (SERVER_IP, SERVER_PORT))
+        print("You ended your session.")
         break
 
     if vote not in VALID_VOTES:
